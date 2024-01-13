@@ -1,0 +1,7 @@
+# For Flask apps
+Flask
+Flask-SQLAlchemy
+# For Dash apps
+dash
+dash-bootstrap-components
+pandas

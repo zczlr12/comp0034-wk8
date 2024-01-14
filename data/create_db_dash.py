@@ -1,4 +1,7 @@
-# Create database and import data from CSV to database table using sqlite3
+"""Create database and import data from CSV to database table using sqlite3.
+
+Creates the database in the Dash app folder.
+"""
 from pathlib import Path
 import sqlite3
 import pandas as pd
@@ -12,7 +15,7 @@ def create_db():
     """
 
     # 1. Create a SQLite database engine that connects to the database file
-    db_file = Path(__file__).parent.parent.joinpath("instance", "paralympics.sqlite")
+    db_file = Path(__file__).parent.parent.joinpath("src", "paralympics_dash", "paralympics.sqlite")
     connection = sqlite3.connect(db_file)
 
     # 2. Create a cursor object to execute SQL queries
@@ -47,9 +50,26 @@ def create_db():
         highlights TEXT,
         FOREIGN KEY(NOC) REFERENCES region(NOC));"""
 
+    # 'user' table definition in SQL
+    create_user_table = """CREATE TABLE if not exists user(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email TEXT NOT NULL UNIQUE,
+                        password_hash TEXT);
+                        """
+
+    # 'location' table definition in SQL
+    create_location_table = """CREATE TABLE if not exists location(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        city TEXT NOT NULL,
+                        lat TEXT NOT NULL,
+                        lon TEXT NOT NULL);
+                        """
+
     # 4. Execute SQL to create the tables in the database
     cursor.execute(create_region_table)
     cursor.execute(create_event_table)
+    cursor.execute(create_user_table)
+    cursor.execute(create_location_table)
 
     # 5. Commit the changes to the database (this saves the tables created in the previous step)
     connection.commit()
@@ -64,12 +84,19 @@ def create_db():
     event_file = Path(__file__).parent.joinpath("paralympic_events.csv")
     paralympics_df = pd.read_csv(event_file)
 
+    # Read the locations data to a pandas dataframe
+    loc_file = Path(__file__).parent.joinpath("latlon.csv")
+    loc_df = pd.read_csv(loc_file)
+
     # 7. Write the pandas DataFrame contents to the database tables
     # For the region table we do not want the pandas DataFrame index column
     noc_regions_df.to_sql("region", connection, if_exists="append", index=False)
     # For the event table we want the pandas index, but it needs to start from 1 and not 0
     paralympics_df.index += 1
-    paralympics_df.to_sql("event", connection, if_exists="append", index_label='id')
+    paralympics_df.to_sql("event", connection, if_exists="append", index_label="id")
+    # For the location table we want the pandas index, but it needs to start from 1 and not 0
+    loc_df.index += 1
+    loc_df.to_sql("location", connection, if_exists="append", index_label="id")
 
     # 8. Close the database connection
     connection.close()

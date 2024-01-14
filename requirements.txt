@@ -1,6 +1,8 @@
 # For Flask apps
 Flask
 Flask-SQLAlchemy
+Flask-Marshmallow
+Marshmallow-SQLAlchemy
 # For Dash apps
 dash
 dash-bootstrap-components

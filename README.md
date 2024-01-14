@@ -1,4 +1,4 @@
-# COMP0034 Week 7 Coding activities: 
+# COMP0034 Week 7 Coding activities
 
 ## Set-up
 
@@ -17,11 +17,20 @@
 
 ## Activity instructions
 
-The activities ...
-
-There are two versions of the activities. You can complete both, or just the version for the framework you intend
-to use for coursework 2. Dash is for dashboard apps (apps that mostly contain charts); Flask is for any other app e.g.
-pages that include a feature that uses a machine learning model or pages that work with the data in some other way.
+There are two versions of the activities. You can complete both, or just the version for the framework you intend to use for coursework 2.
 
 1. [Dash activities](activities/1-dash.md)
 2. [Flask activities](activities/1-flask.md)
+
+## Running the apps in the src directory
+
+This repository contains 4 apps used in the activities which may cause some confusion for imports.
+
+You must remember to run `pip install -e .`
+
+The 4 apps can be run from the terminal as follows, you may need to use 'py' or 'python3' instead of 'python' depdending on your computer:
+
+- Dash app: `python src/paralympics_dash/paralympics_dash.py`
+- Dash multipage app: `python src/paralympics_dash_multi/paralympics_app.py`
+- Flask REST API app (coursework 1): `flask --app paralympics_rest run --debug`
+- Flask app: `flask --app paralympics_flask run --debug`

@@ -50,13 +50,6 @@ def create_db():
         highlights TEXT,
         FOREIGN KEY(NOC) REFERENCES region(NOC));"""
 
-    # 'user' table definition in SQL
-    create_user_table = """CREATE TABLE if not exists user(
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        email TEXT NOT NULL UNIQUE,
-                        password_hash TEXT);
-                        """
-
     # 'location' table definition in SQL
     create_location_table = """CREATE TABLE if not exists location(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +61,6 @@ def create_db():
     # 4. Execute SQL to create the tables in the database
     cursor.execute(create_region_table)
     cursor.execute(create_event_table)
-    cursor.execute(create_user_table)
     cursor.execute(create_location_table)
 
     # 5. Commit the changes to the database (this saves the tables created in the previous step)

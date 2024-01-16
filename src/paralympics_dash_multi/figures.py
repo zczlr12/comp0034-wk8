@@ -1,13 +1,44 @@
+import json
 import sqlite3
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
-import dash_bootstrap_components as dbc
-from dash import html
+import requests
 
 event_data = Path(__file__).parent.parent.parent.joinpath("data", "paralympic_events.csv")
 paralympic_db = Path(__file__).parent.joinpath("paralympics.sqlite")
+
+
+def get_event_data(event_id, method):
+    """
+    Load paralympic event details for a specific event.
+
+    This is used in a version of the card() function to avoid the need to have the REST API running
+    Args:
+        event_id: The event id
+        method: Get the event from REST API (rest) or pandas DataFrame (pandas),
+
+    Returns:
+        ev: data for one event as a json string
+    """
+    if method == "rest":
+        # Use python requests to access your REST API on your localhost
+        # Make sure you run the REST APP first and check your port number if you changed it from the default 5000
+        url = f"http://127.0.0.1:5000/events/{event_id}"
+        event_response = requests.get(url)
+        ev = event_response.json()
+        return ev
+    elif method == "pandas":
+        row_num = event_id + 1
+        df_events = pd.read_csv(event_data)
+        row = df_events.iloc[row_num]
+        # pandas method to convert the row, which is a Series, to json
+        ev_json = row.to_json(double_precision=0, orient="index")
+        ev = json.loads(ev_json)
+        return ev
+    else:
+        raise ValueError(f'method must be one of ["rest", "pandas"]')
 
 
 def line_chart(feature):
@@ -91,43 +122,6 @@ def bar_gender(event_type):
                  template="simple_white"
                  )
     fig.update_xaxes(ticklen=0)
-    return fig
-
-
-def scatter_mapbox():
-    """
-    Create a Scatter mapbox showing the locations of the paralympic events.
-
-    This version requires you to create a mapbox token
-    see https://plotly.com/python/scattermapbox/
-
-    """
-    # create database connection
-    connection = sqlite3.connect(paralympic_db)
-
-    # define the sql query
-    sql = '''
-    SELECT event.id, event.host, event.year, location.lat, location.lon
-    FROM event
-    JOIN location ON event.host = location.city 
-    '''
-
-    df_locs = pd.read_sql(sql=sql, con=connection, index_col=None)
-    df_locs['lon'] = df_locs['lon'].astype(float)
-    df_locs['lat'] = df_locs['lat'].astype(float)
-
-    px.set_mapbox_access_token(open(".mapbox_token").read())
-
-    fig = px.scatter_mapbox(df_locs,
-                            lat='lat',
-                            lon='lon',
-                            zoom=1,
-                            hover_data=['host', 'year'],
-                            mapbox_style='carto-positron',
-                            center=dict(lat=df_locs['lat'][0],
-                                        lon=df_locs['lon'][0])
-                            )
-
     return fig
 
 

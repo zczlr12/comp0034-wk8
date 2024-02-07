@@ -24,13 +24,13 @@ def handle_exception(e):
 
 
 @app.errorhandler(HTTPException)
-def handle_http_exception(e):
+def handle_exception(e):
     """Return JSON instead of HTML for HTTP errors.
 
     Args:
         e: An HTTP exception
     Returns:
-        response:  A Flask response with the HTTP response in JSON format
+        response:  A Flask respons with the HTTP response in JSON format
     """
     # start with the correct headers and status code from the error
     response = e.get_response()

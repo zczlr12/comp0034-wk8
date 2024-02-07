@@ -1,7 +1,7 @@
 """
 Schemas for each of the models in the paralympics app.
 """
-from paralympics_rest.models import Event, Region
+from paralympics_rest.models import Event, Region, User
 from paralympics_rest import db, ma
 
 
@@ -31,3 +31,19 @@ class EventSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
         include_relationships = True
+
+
+class UserSchema(ma.SQLAlchemySchema):
+    """Marshmallow schema defining the attributes for creating a new user.
+
+    The password_hash is set later using the
+    """
+
+    class Meta:
+        model = User
+        load_instance = True
+        sqla_session = db.session
+        include_relationships = True
+
+    email = ma.auto_field()
+    password_hash = ma.auto_field()

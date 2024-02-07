@@ -28,10 +28,25 @@ class Event(db.Model):
     end: Mapped[str] = mapped_column(db.Text, nullable=True)
     duration: Mapped[int] = mapped_column(db.Integer, nullable=True)
     disabilities_included: Mapped[str] = mapped_column(db.Text, nullable=True)
-    countries: Mapped[int] = mapped_column(db.Integer, nullable=True)
+    countries: Mapped[str] = mapped_column(db.Text, nullable=True)
     events: Mapped[int] = mapped_column(db.Integer, nullable=True)
     sports: Mapped[int] = mapped_column(db.Integer, nullable=True)
     participants_m: Mapped[int] = mapped_column(db.Integer, nullable=True)
     participants_f: Mapped[int] = mapped_column(db.Integer, nullable=True)
     participants: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    highlights: Mapped[str] = mapped_column(db.Text, nullable=True)
+    highlights: Mapped[str] = mapped_column(db.String, nullable=True)
+
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(db.String, unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(db.String, unique=True, nullable=False)
+
+    def __repr__(self):
+        return '<User {}>'.format(self.email)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)

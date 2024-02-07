@@ -1,4 +1,4 @@
-# COMP0034 Week 7 Coding activities
+# COMP0034 Week 8 Coding activities
 
 ## Set-up
 
@@ -31,6 +31,6 @@ You must remember to run `pip install -e .`
 The 4 apps can be run from the terminal as follows, you may need to use 'py' or 'python3' instead of 'python' depdending on your computer:
 
 - Dash app: `python src/paralympics_dash/paralympics_dash.py`
-- Dash multipage app: `python src/paralympics_dash_multi/paralympics_app.py`
+- Dash multi-page app: `python src/paralympics_dash_multi/paralympics_app.py`
 - Flask REST API app (coursework 1): `flask --app paralympics_rest run --debug`
 - Flask app: `flask --app paralympics_flask run --debug`

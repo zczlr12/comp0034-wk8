@@ -28,7 +28,7 @@ class Event(db.Model):
     end: Mapped[str] = mapped_column(db.Text, nullable=True)
     duration: Mapped[int] = mapped_column(db.Integer, nullable=True)
     disabilities_included: Mapped[str] = mapped_column(db.Text, nullable=True)
-    countries: Mapped[str] = mapped_column(db.Text, nullable=True)
+    countries: Mapped[int] = mapped_column(db.Text, nullable=True)
     events: Mapped[int] = mapped_column(db.Integer, nullable=True)
     sports: Mapped[int] = mapped_column(db.Integer, nullable=True)
     participants_m: Mapped[int] = mapped_column(db.Integer, nullable=True)

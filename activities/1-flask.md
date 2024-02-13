@@ -10,3 +10,4 @@ Check that the app runs before starting any of the activities.
    e.g. `flask --app paralympics_flask run --debug --port=5050`.
 2. Go to the URL that is shown in the terminal. By default, this is http://127.0.0.1:5000
 3. Stop the app using `CTRL+C`
+

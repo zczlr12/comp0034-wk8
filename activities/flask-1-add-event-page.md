@@ -150,16 +150,15 @@ The POST route logic is:
     - `disabilites_included` value from the form is a list even when it is empty. The database expects a string not a
       list so this needs to be converted.
 3. Check that the event host and year do not already exist in the database
-   - if they do then return an error message render the template for the add_event page and pass the form to it.
+    - if they do then return an error message render the template for the add_event page and pass the form to it.
 4. If not existing, try to save the event to the database.
-   - If fails, flash an error message and render the template for the add_event page and pass the form to it.
+    - If fails, flash an error message and render the template for the add_event page and pass the form to it.
 5. If the event is saved, flash a success message and redirect to the route for the home page.
 
 The above introduces two new Flask functions:
 
-   - [Redirect](https://flask.palletsprojects.com/en/3.0.x/api/#flask.Flask.redirect) to a different route
-   - [message flashing](https://flask.palletsprojects.com/en/3.0.x/patterns/flashing/)
-
+- [Redirect](https://flask.palletsprojects.com/en/3.0.x/api/#flask.Flask.redirect) to a different route
+- [message flashing](https://flask.palletsprojects.com/en/3.0.x/patterns/flashing/)
 
 ```python
 from flask import current_app as app, render_template, flash, request, redirect, url_for
@@ -222,10 +221,26 @@ def add_event():
     return render_template('add_event.html', form=form)
 ```
 
-## Run the app
+## Update the navbar
 
+Now that you have all the pages, you can update the navbar to include links using the flask url_for function. This takes
+the route function name as a parameter.
 
-TODO: Update the navbar
+Find the following section in /templates/navbar.html and update the links.
+
+```html
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('display_chart') }}">Chart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('add_event') }}">Add event</a>
+                </li>
+            </ul>
+```
 
 
 ## Challenge
@@ -236,7 +251,8 @@ This is an optional challenge, code solution is not provided.
 
 Add a page to edit an existing event.
 
-1. Generate a page with a form that contains the existing data for an event. (see <https://wtforms.readthedocs.io/en/3.1.x/crash_course/#editing-existing-objects>)
+1. Generate a page with a form that contains the existing data for an event. (
+   see <https://wtforms.readthedocs.io/en/3.1.x/crash_course/#editing-existing-objects>)
 2. Allow the fields to be edited.
 3. Verify that any changes meet the validation criteria.
 4. Update the database with the changes.

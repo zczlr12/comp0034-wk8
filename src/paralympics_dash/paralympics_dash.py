@@ -86,7 +86,7 @@ def create_card_from_df(event_id):
 
     #
     df_events = pd.read_csv(event_data)
-    ev = df_events.iloc[event_id + 1]
+    ev = df_events.iloc[event_id - 1]
 
     # Variables for the card contents
     logo = f'logos/{ev['year']}_{ev['host']}.jpg'

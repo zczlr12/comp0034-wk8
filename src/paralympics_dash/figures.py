@@ -59,9 +59,8 @@ def line_chart(feature):
 
 def bar_gender(event_type):
     """
-    Creates a stacked bar chart showing change in the number of sports in the summer and winter paralympics
-    over time
-    An example for exercise 2.
+    Creates a stacked bar chart showing change ratio of m/f participants in the summer and winter paralympics
+    over time.
 
     :param event_type: str Winter or Summer
     :return: Plotly Express bar chart
@@ -89,6 +88,46 @@ def bar_gender(event_type):
                  template="simple_white"
                  )
     fig.update_xaxes(ticklen=0)
+    return fig
+
+
+def bar_gender_faceted(event_type):
+    """
+    Creates a faceted subplot with stacked bar charts showing change in the number of m/f participants in the summer
+    and winter paralympics over time.
+
+    :param event_type: List with Winter and/or Summer
+    :return: Plotly Express bar chart
+    """
+    cols = ['type', 'year', 'host', 'participants_m', 'participants_f', 'participants']
+    df_events = pd.read_csv(event_data, usecols=cols)
+
+    # Keep only rows where there is m/f data
+    df_events = df_events[(df_events['participants_f'] >= 1)].reset_index(drop=True)
+
+    # Add new columns that each contain the result of calculating the % of male and female participants
+    df_events['M%'] = df_events['participants_m'] / df_events['participants']
+    df_events['F%'] = df_events['participants_f'] / df_events['participants']
+
+    # Create a new column that combines Location and Year to use as the x-axis
+    df_events['xlabel'] = df_events['host'] + ' ' + df_events['year'].astype(str)
+
+    # Get the data based on the selected parameters Winter/Summer/Both/None
+    df_events = df_events.loc[df_events['type'].isin(event_type)]
+
+    # Create the faceted stacked bar plot of the % for male and female
+    fig = px.bar(df_events,
+                 x='xlabel',
+                 y=['M%', 'F%'],
+                 facet_col='type',
+                 title='How has the ratio of female:male participants changed?',
+                 labels={'xlabel': '', 'value': '', 'variable': '', 'type': 'Event type '},
+                 color_discrete_map={'M%': 'blue', 'F%': 'green'},
+                 template="simple_white"
+                 )
+
+    # Set separate x-axis labels
+    fig = fig.update_xaxes(matches=None)
     return fig
 
 
@@ -149,6 +188,7 @@ def scatter_geo():
                          lat=df_locs.lat,
                          lon=df_locs.lon,
                          hover_name=df_locs.name,
-                         title="Where have the paralympics been held?"
+                         title="Where have the paralympics been held?",
+                         custom_data='id' # required to be able to find the event from the marker
                          )
     return fig

@@ -1,3 +1,6 @@
+Note: If you want to use Dash rather than Flask to deploy an ML model
+see: [Build Python Web Apps for scikit-learn Models with Plotly Dash](https://plotly.com/blog/build-python-web-apps-for-scikit-learn-with-plotly-dash/)
+
 # Page that returns a prediction
 
 There is no ML model for the paralympics app so this example creates a simple one-page Flask app with a form to predict
@@ -7,12 +10,14 @@ The code in the src/flask_iris directory structure creates a basic Flask app tha
 from a pickled model.
 
 ## Form
+
 There is a form defined in [/src/flask_iris/forms.py](../src/flask_iris/forms.py) which 4 fields for each value required
 to get a prediction.
 
 How to create a form is covered in activity 4.
 
 ## Route
+
 There is a single route in [src/flask_iris/routes.py](../src/flask_iris/routes.py) which on GET returns a form, and on
 POST if all the fields of the form have been completed, returns a prediction which is appended to the page below the
 form.
@@ -82,7 +87,9 @@ def make_prediction(flower_values):
 ```
 
 ## Pickled model
-The code to generate and pickle the model is in [/src/flask_iris/create_ml_model.py](../src/flask_iris/create_ml_model.py).
+
+The code to generate and pickle the model is
+in [/src/flask_iris/create_ml_model.py](../src/flask_iris/create_ml_model.py).
 
 This code is called in the create_app() function in the `flask_iris/__init__.py` file
 
@@ -142,6 +149,8 @@ def create_model(alg):
         pickle_file = Path(__file__).parent.joinpath("model.pkl")
         pickle.dump(model, open(pickle_file, "wb"))
 ```
+
 ## Run the app
 
 To run the app: `flask --app flask_iris:create(app) run --debug`
+

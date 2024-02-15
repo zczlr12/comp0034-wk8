@@ -127,7 +127,8 @@ section 'Update Graphs on Hover'.
 ### Input
 
 We want to update the card when the map marker point for the event is hovered over. The input is the hoverData property.
-The hoverData object for the scatter_geo points as defined in figures.py returns data that looks like this:
+The hoverData object for the scatter_geo points as defined in figures.py returns data that looks like this (I printed
+the hover_data to find the structure as it was not clear from the Plotly documentation):
 
 ```python
 {
@@ -152,9 +153,12 @@ The hoverData object for the scatter_geo points as defined in figures.py returns
 }
 ```
 
-The first element in the 'points' points list is accessed at index 0. In the element find the 'customdata' property. The
-event_id that we want is the first element in the customdata list. To access it will look something like
-this: `hoverData['points'][0]['customdata'][0]`
+This is a dictionary with list elements within it. The 'customdata' field is within the 'points' list, which is a list
+of dictionaries.
+First access points in the dictionary. Since the value associated with 'points' is a list, we access its first element
+with [0]. Then, we accessed the 'customdata' field within this dictionary. Then since the customdata value is also a
+list, we access its first element with [0].
+To access it will look something like this: `hoverData['points'][0]['customdata'][0]`
 
 ### Output
 
@@ -203,7 +207,8 @@ def display_card(hover_data):
 ```
 
 ## More on callbacks
-These are just a few examples. There are more interactions and examples in the Dash tutorial documentation. 
+
+These are just a few examples. There are more interactions and examples in the Dash tutorial documentation.
 
 - [Basic callbacks documentation](https://dash.plotly.com/basic-callbacks).
 - [Interactive graphing and cross filtering](https://dash.plotly.com/interactive-graphing)

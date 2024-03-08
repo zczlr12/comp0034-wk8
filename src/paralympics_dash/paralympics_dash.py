@@ -1,10 +1,10 @@
 """ Code as at the end of week 7 activities """
 import pandas as pd
 import requests
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
-from figures import line_chart, bar_gender, scatter_geo, event_data
+from figures import line_chart, bar_gender_faceted, scatter_geo, event_data
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 meta_tags = [
@@ -16,7 +16,7 @@ app = Dash(__name__, external_stylesheets=external_stylesheets, meta_tags=meta_t
 line = line_chart("sports")
 
 # Create the Plotly Express stacked bar chart object to show gender split of participants for the type of event
-bar = bar_gender("winter")
+bar = bar_gender_faceted(["winter"])
 
 # Create the scatter map
 map = scatter_geo()
@@ -44,13 +44,13 @@ def create_card(event_id):
     ev = event_response.json()
 
     # Variables for the card contents
-    logo = f'logos/{ev['year']}_{ev['host']}.jpg'
-    dates = f'{ev['start']} to {ev['end']}'
-    host = f'{ev['host']} {ev['year']}'
-    highlights = f'Highlights: {ev['highlights']}'
-    participants = f'{ev['participants']} athletes'
-    events = f'{ev['events']} events'
-    countries = f'{ev['countries']} countries'
+    logo = f"logos/{ev['year']}_{ev['host']}.jpg"
+    dates = f"{ev['start']} to {ev['end']}"
+    host = f"{ev['host']} {ev['year']}"
+    highlights = f"Highlights: {ev['highlights']}"
+    participants = f"{ev['participants']} athletes"
+    events = f"{ev['events']} events"
+    countries = f"{ev['countries']} countries"
 
     card = dbc.Card([
         dbc.CardBody(
@@ -89,13 +89,13 @@ def create_card_from_df(event_id):
     ev = df_events.iloc[event_id - 1]
 
     # Variables for the card contents
-    logo = f'logos/{ev['year']}_{ev['host']}.jpg'
-    dates = f'{ev['start']} to {ev['end']}'
-    host = f'{ev['host']} {ev['year']}'
-    highlights = f'Highlights: {ev['highlights']}'
-    participants = f'{ev['participants']} athletes'
-    events = f'{ev['events']} events'
-    countries = f'{ev['countries']} countries'
+    logo = f"logos/{ev['year']}_{ev['host']}.jpg"
+    dates = f"{ev['start']} to {ev['end']}"
+    host = f"{ev['host']} {ev['year']}"
+    highlights = f"Highlights: {ev['highlights']}"
+    participants = f"{ev['participants']} athletes"
+    events = f"{ev['events']} events"
+    countries = f"{ev['countries']} countries"
 
     card = dbc.Card([
         dbc.CardBody(
@@ -138,7 +138,7 @@ checklist = dbc.Checklist(
         {"label": "Summer", "value": "summer"},
         {"label": "Winter", "value": "winter"},
     ],
-    value=["summer"],
+    value=["winter"],
     id="checklist-input",
     inline=True,
 )
@@ -177,7 +177,7 @@ row_four = dbc.Row([
     ], width=8, align="start"),
     dbc.Col(children=[
         html.Br(),
-        card,
+        html.Div(id='card'),
     ], width=4, align="start"),
 ])
 
@@ -187,6 +187,32 @@ app.layout = dbc.Container([
     row_three,
     row_four,
 ])
+
+@app.callback(
+    Output(component_id='line', component_property='figure'),
+    Input(component_id='type-dropdown', component_property='value')
+)
+def update_line_chart(chart_type):
+    figure = line_chart(chart_type)
+    return figure
+
+@app.callback(
+    Output(component_id='bar', component_property='figure'),
+    Input(component_id='checklist-input', component_property='value')
+)
+def update_bar_chart(event_type):
+    figure = bar_gender_faceted(event_type)
+    return figure
+
+@app.callback(
+    Output('card', 'children'),
+    Input('map', 'hoverData')
+)
+def display_card(hover_data):
+    if hover_data is not None:
+        event_id = hover_data['points'][0]['customdata'][0]
+        if event_id is not None:
+            return create_card(event_id)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8050)
